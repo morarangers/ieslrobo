@@ -4,31 +4,31 @@
 
 #define analogThreshold 150
 
-#define l5 analogRead(5) - 620
-#define l4 analogRead(6) - 0  // not working
-#define l3 analogRead(7) - 300
-#define l2 analogRead(8) - 650
-#define l1 analogRead(9) - 500
+#define l5 (analogRead(5) - 620)
+#define l4 (analogRead(6) - 0)  // not working
+#define l3 (analogRead(7) - 300)
+#define l2 (analogRead(8) - 650)
+#define l1 (analogRead(9) - 500)
 
-#define m analogRead(10) - 0
-#define r1 analogRead(11) - 200
-#define r2 analogRead(12) - 0 
-#define r3 analogRead(13) - 400
-#define r4 analogRead(14) - 600
-#define r5 analogRead(15) - 680
+#define m (analogRead(10) - 0)
+#define r1 (analogRead(11) - 200)
+#define r2 (analogRead(12) - 0 )
+#define r3 (analogRead(13) - 400)
+#define r4 (analogRead(14) - 600)
+#define r5 (analogRead(15) - 680)
 
-#define d_l5 analogRead(5) - 620 - analogThreshold > 0?1:0
-#define d_l4 analogRead(6) - 0 - analogThreshold > 0?1:0// not working
-#define d_l3 analogRead(7) - 300 -analogThreshold > 0?1:0
-#define d_l2 analogRead(8) - 650 -analogThreshold > 0?1:0
-#define d_l1 analogRead(9) - 500 -analogThreshold > 0?1:0
+#define d_l5 (analogRead(5) - 620 - analogThreshold > 0?1:0)
+#define d_l4 (analogRead(6) - 0 - analogThreshold > 0?1:0)// not working
+#define d_l3 (analogRead(7) - 300 -analogThreshold > 0?1:0)
+#define d_l2 (analogRead(8) - 650 -analogThreshold > 0?1:0)
+#define d_l1 (analogRead(9) - 500 -analogThreshold > 0?1:0)
 
-#define d_m analogRead(10) - 0 -analogThreshold > 0?1:0
-#define d_r1 analogRead(11) - 200 -analogThreshold > 0?1:0
-#define d_r2 analogRead(12) - 0 -analogThreshold > 0?1:0
-#define d_r3 analogRead(13) - 400-analogThreshold > 0?1:0
-#define d_r4 analogRead(14) - 600-analogThreshold > 0?1:0
-#define d_r5 analogRead(15) - 680-analogThreshold > 0?1:0
+#define d_m (analogRead(10) - 0 -analogThreshold > 0?1:0)
+#define d_r1 (analogRead(11) - 200 -analogThreshold > 0?1:0)
+#define d_r2 (analogRead(12) - 0 -analogThreshold > 0?1:0)
+#define d_r3 (analogRead(13) - 400-analogThreshold > 0?1:0)
+#define d_r4 (analogRead(14) - 600-analogThreshold > 0?1:0)
+#define d_r5 (analogRead(15) - 680-analogThreshold > 0?1:0)
 
 #define leftMotorForwardPin 22
 #define leftMotorBackwardPin 24
@@ -45,7 +45,7 @@ int leftEnc_count=0;
 int rightEnc_count=0;
 int left_enc_mini=0;
 int right_enc_mini=0;
-#define ENCODER_MINI_COUNT 5
+#define ENCODER_MINI_COUNT 1
 
 int leftEncoderSpeedCount_1=0;
 int rightEncoderSpeedCount_1=0;
@@ -60,7 +60,6 @@ int time=0;
 int forwardleftPWM;
 
 bool READ_BARCODE=false;
-Barcode cur_reading_barcode;
 
 String barcode="";
 
@@ -196,13 +195,6 @@ void setup(){
 }
 
 
-void loop(){
-	
-	printSensors();
-	delay(200);
-
-}
-
 void right_Enc_INT(){
 	right_enc_mini++;
 	if(right_enc_mini>=ENCODER_MINI_COUNT){
@@ -211,7 +203,7 @@ void right_Enc_INT(){
 	}
 
 	if(READ_BARCODE){
-		cur_reading_barcode.aa();
+		//cur_reading_barcode.aa();
 			
 	}
 
@@ -267,23 +259,63 @@ void printSensors(){
 
 }
 
-class Barcode{
-
-
-public: 
-	
-	int last;
-	String code;
-
-	Barcode(){
-		last=0;
-		code="";
+void checkBarCode(){
+	int x=0,y;
+	while((d_m)==0){
+		forward(30);
+		//Serial.print("a");
 	}
-	
-	void aaa(){
+	y=leftEnc_count;
+	Serial.println("going to black area");
+	Serial.print("y = ");
+	Serial.println(y);
 
+	while((d_m)==1){
+		forward(30);
+		//Serial.print("b");
 	}
 
-
-
+	y=leftEnc_count-y;
+	Serial.println("going to white area");
+	Serial.print("length = ");
+	Serial.println(y);
+	//breakMotors(10000);
+	forward(0);
+	delay(10000);
+	
 }
+
+void check(int pwm){
+	breakMotors(3000);
+	Serial.println("starting...");
+	int values[5];
+	int current;
+	int count;
+
+	for(int i=0;i<12;i++){
+		current=d_m;
+		count=leftEnc_count;
+		while(d_m==current){
+			forward(pwm);
+		}
+		values[i]=leftEnc_count-count;
+	}
+
+	for(int i=1;i<12;i++){
+		Serial.println(values[i]);
+	}
+	Serial.println("end");
+	breakMotors(5000);
+}
+
+void loop(){
+	check(50);
+	//checkBarCode();
+	//Serial.println(d_m);
+	/*if(d_m==0)
+		Serial.println("a");
+	else if(d_m==1)
+		Serial.println("b");*/
+}
+
+
