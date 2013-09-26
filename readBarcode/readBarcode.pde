@@ -2,33 +2,33 @@
 
 #define ledpin 13
 
-#define analogThreshold 150
+#define analogThreshold 0
 
-#define l5 (analogRead(5) - 620)
-#define l4 (analogRead(6) - 0)  // not working
-#define l3 (analogRead(7) - 300)
-#define l2 (analogRead(8) - 650)
-#define l1 (analogRead(9) - 500)
+#define l5 analogRead(5) - 610
+#define l4 analogRead(6) - 270
+#define l3 analogRead(7) - 460
+#define l2 analogRead(8) - 720
+#define l1 analogRead(9) - 720
 
-#define m (analogRead(10) - 0)
-#define r1 (analogRead(11) - 200)
-#define r2 (analogRead(12) - 0 )
-#define r3 (analogRead(13) - 400)
-#define r4 (analogRead(14) - 600)
-#define r5 (analogRead(15) - 680)
+#define m analogRead(10) - 430
+#define r1 analogRead(11) - 520
+#define r2 analogRead(12) - 540
+#define r3 analogRead(13) - 660
+#define r4 analogRead(14) - 680
+#define r5 analogRead(15) - 730
 
-#define d_l5 (analogRead(5) - 620 - analogThreshold > 0?1:0)
-#define d_l4 (analogRead(6) - 0 - analogThreshold > 0?1:0)// not working
-#define d_l3 (analogRead(7) - 300 -analogThreshold > 0?1:0)
-#define d_l2 (analogRead(8) - 650 -analogThreshold > 0?1:0)
-#define d_l1 (analogRead(9) - 500 -analogThreshold > 0?1:0)
+#define d_l5 (analogRead(5) - 610 - analogThreshold > 0?1:0)
+#define d_l4 (analogRead(6) - 270 - analogThreshold > 0?1:0)
+#define d_l3 (analogRead(7) - 460 -analogThreshold > 0?1:0)
+#define d_l2 (analogRead(8) - 720 -analogThreshold > 0?1:0)
+#define d_l1 (analogRead(9) - 720 -analogThreshold > 0?1:0)
 
-#define d_m (analogRead(10) - 0 -analogThreshold > 0?1:0)
-#define d_r1 (analogRead(11) - 200 -analogThreshold > 0?1:0)
-#define d_r2 (analogRead(12) - 0 -analogThreshold > 0?1:0)
-#define d_r3 (analogRead(13) - 400-analogThreshold > 0?1:0)
-#define d_r4 (analogRead(14) - 600-analogThreshold > 0?1:0)
-#define d_r5 (analogRead(15) - 680-analogThreshold > 0?1:0)
+#define d_m (analogRead(10) - 430 -analogThreshold > 0?1:0)
+#define d_r1 (analogRead(11) - 520 -analogThreshold > 0?1:0)
+#define d_r2 (analogRead(12) - 540 -analogThreshold > 0?1:0)
+#define d_r3 (analogRead(13) - 660-analogThreshold > 0?1:0)
+#define d_r4 (analogRead(14) - 680-analogThreshold > 0?1:0)
+#define d_r5 (analogRead(15) - 730-analogThreshold > 0?1:0)
 
 #define leftMotorForwardPin 22
 #define leftMotorBackwardPin 24
