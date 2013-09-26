@@ -1,0 +1,12 @@
+﻿Build started 9/25/2013 10:27:31 PM.
+     1>Project "C:\Users\Dell\Documents\Arduino\IESL ALL\iesl1\iesl1.vcxproj" on node 3 (build target(s)).
+     1>InitializeBuildStatus:
+         Creating "Debug\iesl1.unsuccessfulbuild" because "AlwaysCreate" was specified.
+       FinalizeBuildStatus:
+         Deleting file "Debug\iesl1.unsuccessfulbuild".
+         Touching "Debug\iesl1.lastbuildstate".
+     1>Done Building Project "C:\Users\Dell\Documents\Arduino\IESL ALL\iesl1\iesl1.vcxproj" (build target(s)).
+
+Build succeeded.
+
+Time Elapsed 00:00:00.07
