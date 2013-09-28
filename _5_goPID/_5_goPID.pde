@@ -62,6 +62,7 @@ bool READ_BARCODE=false;
 String barcode="";
 
 int pwm_error=0;
+//int pre_pwm_error=0;
 
 int getDigital(int num){
 	if(num==-5) return d_l5;
@@ -122,8 +123,52 @@ void forward(int pwm){
 }
 
 void lineFollow(int pwm){
-	leftMotorForward((pwm/9)*9 +pwm_error );
-	rightMotorForward(pwm - pwm_error);
+	
+	/*
+	int w1=1,w2=2,w3=4,w4=8,w5=16;
+	int current=d_l5 * -w5 + d_l4 * -w4 + d_l3 * -w3 + d_l2 * -w2  + d_l1 * -w1 + 0 + d_r5 * w5 + d_r4 * w4 + d_r3 * w3 + d_r2 * w2  + d_r1 * w1;
+	if (d_l5 ||d_l4 || d_l3 ||d_l2 || d_l1 || d_m || d_r1 || d_r2 || d_r3 || d_r4 ||d_r5){ 
+		pwm_error=current*1.5;
+	}*/
+
+
+	int errors[]={-32,-16,-8,-2,-1,0,1,2,8,16,32};
+	int common_error=0;
+
+	int k=-5,l=5;
+	
+	for(int i=-5;i<=5;i++){
+		if(getDigital(i)) k=i;
+	}
+	for(int i=5;i>=-5;i--){
+		if(getDigital(i)) l=i;
+	}
+
+	int current=errors[(k+l)/2 + 5];
+
+	if(current!=0){
+		pwm_error=current*12;
+	}
+
+	Serial.println(pwm_error);
+	
+	int l_pwm=(pwm/9)*11 +pwm_error;
+	int r_pwm=pwm - pwm_error;
+	//int common_error=0;
+
+
+	if(l_pwm>0){
+		leftMotorForward(l_pwm-common_error);
+	}else{
+		leftMotorBackward(pwm-common_error);
+	}
+
+	if(r_pwm>0){
+		rightMotorForward(r_pwm-common_error);
+	}else{
+		rightMotorBackward(pwm-common_error);
+	}
+
 }
 
 void backward(int pwm){
@@ -175,7 +220,7 @@ void rotateRightOneMotor(int pwm){
 
 void setup(){
   
-  //Serial.begin(9600);
+  Serial.begin(9600);
   
   pinMode(leftMotorPWMPin,OUTPUT);
   pinMode(rightMotorPWMPin,OUTPUT);
@@ -201,14 +246,14 @@ void setup(){
   pinMode(2,INPUT);
   pinMode(1,INPUT);
 
-  //attachInterrupt(0,left_Enc_INT,CHANGE); // to leftEncoder (pin number=2)
-  //attachInterrupt(1,right_Enc_INT,CHANGE); // to rightEncoder (pin number=3)
+  attachInterrupt(0,left_Enc_INT,CHANGE); // to leftEncoder (pin number=2)
+  attachInterrupt(1,right_Enc_INT,CHANGE); // to rightEncoder (pin number=3)
 
   pinMode(ledpin,OUTPUT);
 
   // Timer 1
-  //Timer1.initialize(100000);         // initialize timer1, and set a 1/2 second period
-  //Timer1.attachInterrupt(encoderCheck);  // attaches callback() as a timer overflow interrupt
+  Timer1.initialize(100000);         // initialize timer1, and set a 100milisecond period
+  Timer1.attachInterrupt(encoderCheck);  // attaches encodercheck() as a timer overflow interrupt
 
 }
 
@@ -326,41 +371,6 @@ void check(int pwm){
 	breakMotors(5000);
 }
 
-
-void go_pid(){
-	int w1=1,w2=2,w3=4,w4=8,w5=16;
-
-	int errors[]={-5,-4,-3,-2,-1,0,1,2,3,4,5};
-
-	int k=-5,l=5;
-	
-	for(int i=-5;i<=5;i++){
-		if(getDigital(i)) k=i;
-	}
-	for(int i=5;i>=-5;i--){
-		if(getDigital(i)) l=i;
-	}
-
-	
-
-	/*
-	int current=d_l5 * -w5 + d_l4 * -w4 + d_l3 * -w3 + d_l2 * -w2  + d_l1 * -w1 + 0 + d_r5 * w5 + d_r4 * w4 + d_r3 * w3 + d_r2 * w2  + d_r1 * w1;
-	if (d_l5 ||d_l4 || d_l3 ||d_l2 || d_l1 || d_m || d_r1 || d_r2 || d_r3 || d_r4 ||d_r5){ 
-		pwm_error=current*1.5;
-	}*/
-
-	int current=errors[(k+l)/2 + 5];
-
-	if(current!=0){
-		pwm_error=current*5;
-	}
-
-	//Serial.println(pwm_error);
-
-
-}
-
-
 void loop(){
 
 	//go_pid();
@@ -368,10 +378,8 @@ void loop(){
 	//leftMotorForward(40);
 	//rightMotorForward(40);
 
-
-	go_pid();
 	lineFollow(50);
-	delay(50);
+	//delay(50);
 	/*
 	for(int i=-5;i<=5;i++){
 		Serial.print(getDigital(i));
